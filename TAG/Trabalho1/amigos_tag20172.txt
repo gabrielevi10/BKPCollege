@@ -1,0 +1,49 @@
+1,110027892,Diego Santos Kieckbusch
+2,120037301,Marcelo Giordano Martins Costa de Oliveira,5,11,17,42
+3,130032891,Marcus Vinicius da Silva Borges,2,7,10,19,21,29,30
+4,130056162,Lucas Araujo Pena
+5,130058866,Kevin Masin Mahema
+6,130067385,Vinicius de Sousa Santana,4
+7,130137421,Vitor Passos Pontes,3,10,19,21,29,30
+8,140030131,Pedro Henrique Santos Gonzaga
+9,140080279,Bernardo Costa Nascimento
+10,140082221,Frederico de Paiva Lenza,3,7,13,16,17,26,27,32
+11,140087851,Walyson Maxwel Dias Leite
+12,140159461,Rafael de Oiveira Martins
+13,140160299,Raphael Soares Ramos,10,15,17,19
+14,140161597,Rodrigo Neris Ferreira Cardoso,2,17,19,43
+15,140168915,Jader Martins Camboim de Sa,13
+16,140170961,Thiago Pereira Ribeiro Dantas,10,17,14
+17,140178759,Leandro Alberto de Faria,2,11,14,42
+18,150015585,Luan Mendes Goncalves Freitas,5,19,49
+19,150032552,Claudio Segala Rodrigues Silva Filho,2,3,7,13,14,15,17,21,25,26,27,28,29,30,32,34,42,46
+20,150118236,Antonio Henrique de Moura Rodrigues,23,26,31,33
+21,150120524,Caio Costa de Oliveira,3,7,10,29,30,31
+22,150124163,Emmanuel Gustavo Rinaldi Perotto
+23,150126701,Gabriel Patrick Alcantara Mourao,17,24,25,26,27,28,30,31,32,33
+24,150126760,Gabriel Rocha Fontenele,19,23,25,26,32,33,40,43
+25,150126808,Gabriel Rodrigues Diogenes Macedo,10,12,19,23,24,26,32,36,38,43,45
+26,150129921,Igor Figueira Pinheiro da Silva,10,19,20,23,24,25,27,29,30,32,33,34,36,37,39,43,46
+27,150131992,Joao Gabriel Lima Neves,2,10,20,25,26,29,31,32,33,34
+28,150132131,Joao Marcos Schmaltz Duda,30,32,37
+29,150134495,Khalil Carsten do Nascimento
+30,150135491,Leonardo de Almeida,3,7,21,29
+31,150141661,Matheus Rodrigues Guimaraes,10,14,20,23,24,25,26,27,32,33
+32,150146612,Renan Godoi de Medeiros,24,25,26,27,31,33
+33,150150296,Tiago Rodrigues da Cunha Cabral,20,23,24,26,27,31,32
+34,160002575,Arthur da Silveira Couto
+35,160003636,Caio Albuquerque Brandao,30,33,36,40,41,43,46
+36,160006490,Gabriel Levi Gomes da Silva,28,32,35,41,42
+37,160011795,Leo Moraes da Silva,35,36,38,41,42
+38,160015537,Mikael Marques Mello,35,36,37,39,41,46
+39,160033811,Leonardo Maffei da Silva,19,23,26,34,35,36,37,38,41,42,43,45,46
+40,160038316,Pedro Lucas Pinto Andrade,24,43
+41,160046424,Gabriel Lobao Barroso de Souza,29,35,36,37,38,39,45,46
+42,160047617,Adriano Rodrigues Figueiredo Torres,2,7,11,12,19,37,43,47
+43,160048036,Ana Luisa Salvador Alvarez,24,26,36,37,38,39,40,42,44
+44,160069653,Barbara Varanda Rangel
+45,160071101,Joao Victor Bohrer Munhoz
+46,160071569,Luis Felipe Braga Gebrim Silva
+47,160085012,Victor Neves Martorelli
+48,170052915,Lucas Sousa Lacerda
+49,170053016,Matheus Barbosa Santos
