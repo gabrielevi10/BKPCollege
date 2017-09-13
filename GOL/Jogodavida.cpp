@@ -59,13 +59,16 @@ void Jogodavida::AttField(){
 		celulas[i][j].setAlive();
 		printcelulas[i][j] = '$';
 	}
+	mustLivei.clear();
+	mustLivej.clear();
 	for(int k = 0; k < mustDiei.size(); k++){
 		i = mustDiei[k];
 		j = mustDiej[k];
 		celulas[i][j].setKill();
 		printcelulas[i][j] = '-';		
 	}
-
+	mustDiei.clear();
+	mustDiej.clear();
 }
 
 void Jogodavida::regras(int i, int j){
