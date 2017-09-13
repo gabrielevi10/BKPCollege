@@ -4,7 +4,7 @@
 using namespace std;
 
 Cells::Cells(){
-	this->Alive = false;
+ 	this->Alive = false;
 }
 
 void Cells::setAlive(){
