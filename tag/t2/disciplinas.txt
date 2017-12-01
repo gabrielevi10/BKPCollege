@@ -1,0 +1,35 @@
+113034|Calculo 1|18|113042-115045-117536-
+113468|Introducao aos Sistemas Computacionais|8|
+113450|Fundamentos Teoricos da Computacao|8|117366-
+113476|Algoritmos e Programacao de Computadores|12|116319-
+116726|Informatica e Sociedade|2|
+116351|Circuitos Digitais|12|116394-
+116319|Estrutura de Dados|4|117889-117366-116327-117901-116572-116343-116653-116432-116416-117943-117536-
+113042|Calculo 2|18|113417-116572-
+113093|Introducao a Algebra Linear|8|
+116394|Organizacao e Arquitetura de Computadores|12|117935-116432-
+117889|Tecnicas de Programacao 1|8|117897-116441-117536-
+113107|Algebra 1|8|116882-
+113417|Calculo Numerico|8|
+115045|Probabilidade e Estatistica|12|116327-116572-117943-
+117366|Logica Computacional 1|12|116653-
+117897|Tecnicas de Programacao 2|8|117935-
+116327|Organizacao de Arquivos|4|116378-
+117901|Teoria e Aplicacao de Grafos|8|
+116572|Redes de Computadores|8|117927-
+116343|Linguagens de Programacao|8|116441-117951-
+117935|Programacao Concorrente|8|117960-
+116441|Engenharia de Software|8|
+116378|Banco de Dados|12|116416-
+116653|Introducao a Inteligencia Artificial|8|
+116432|Software Basico|12|117951-
+117960|Fundamento de Sistemas Operacionais|8|
+116882|Automatos e Computabilidade|18|117951-
+116416|Sistemas de Informacao|4|
+117943|Computacao Experimental|8|
+117536|Projeto e Analise de Algoritmos|8|
+117951|Compiladores|12|
+117927|Seguranca Computacional|8|
+117919|Metodologia Cientifica|2|
+116912|Trabalho de Graduacao 1|6|116921-
+116921|Trabalho de Graduacao 2|12|117919-

@@ -1,0 +1,30 @@
+1- Assertivas de entrada são verificações que devem ser feitas nos parametros de uma função ou modulo antes deste ser executado, assegurando que o cliente tenha provido os dados de maneira correta para o módulo servidor. Já as assertivas de sáida verificam o retorno da função, para que o cliente receba os dados esperados, assegurando a corretude da função implementada. O servidor deve verificar o contrato de entrada e o cliente verificar o contrato de saída.
+
+2- 	public void RegistrarFuncionario(double salario,char* nome,char* cargo){
+
+		int idFuncionario = ObterId();
+
+		assert(idFuncionario != NULL);
+		assert(ExisteFuncionario(idFuncionario) == true);
+		assert(nome != NULL);
+		assert(salario != NULL);
+
+		RegistrarNome(idFuncionario,nome);
+		
+		assert(salario > 500 && salario < 3000);
+		if(salario < 1000) cargo = 'secretario';
+		if(salario > 1000 && salario < 2000) cargo = "desenvolvedor";
+		if(salario > 2000) cargo = "chefe";
+		if(salario < 500 || salario > 3000) cargo = "desconhecido";
+
+		assert(cargo != NULL);
+
+		RegistrarSalario(idFuncionario,salario,cargo);
+	}
+
+3- Assertivas de entrada: A != NULL, p >= 0, r >= 0, q >= 0, p <= q, q < r.
+   Assertivas de saída: lenght(A) <= lenght(L) + lenght(R), para todo x,y em A tal que x = A[i] e y = A[j], x < y se i < j.
+
+4- Assertivas de entrada: assert(dezena > 0), assert(dezena < 7), assert(unidade >= 0), assert(unidade <= 9), assert(tabela != NULL), assert(tamanho(tabela) == 60), assert(dezena != NULL), assert(unidade != NULL), assert(tabela[dezena][unidade] == 0);
+
+5-    
