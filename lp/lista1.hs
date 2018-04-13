@@ -32,3 +32,30 @@ is_leapyear = do
 divisors x = xs where xs = [k | k <- [1..x], mod x k == 0]
 
 -- Questao 8
+same_elements [] ys = True
+same_elements xs [] = False
+same_elements (x:xs)(ys)  
+	| elem x ys = same_elements xs ys
+	| otherwise =  False
+
+-- Questao 9
+formatof :: String -> String
+formatof (x:xs)
+	| x == '.' = xs
+	| otherwise = formatof xs
+
+-- Questao 10
+timesin x [] = 0
+timesin x (y:ys)
+	| x == y = 1 + timesin x ys
+	| otherwise = timesin x ys
+
+-- Questao 11
+above_average xs = [k | k <- xs, k > av] where av = div (foldl1(+) xs)(length xs)
+
+-- Questao 12
+
+-- Questao 13
+position x (y:ys) 
+	| x /= y = 1+position x ys
+	| x == y = 0
