@@ -4,6 +4,11 @@ import Data.Char
 four_eq [x1,x2,x3,x4] = (x1 == x2 && x2 == x3 && x3 == x4) 
 
 -- Questao 2
+[] /\ _ = []
+_ /\ [] = []
+(x:xs) /\ ys
+	| elem x ys = [x] ++ xs/\ys
+	| otherwise = xs/\ys
 
 -- Questao 3
 resto :: Integer -> Integer -> Integer
@@ -54,8 +59,25 @@ timesin x (y:ys)
 above_average xs = [k | k <- xs, k > av] where av = div (foldl1(+) xs)(length xs)
 
 -- Questao 12
+namesin [] = []
+namesin (x:xs)
+	| elem x ['A'..'Z'] = [x]++getString xs
+	| otherwise = namesin xs
+
+getString (y:ys) 
+	| y == ' ' = []
+	| otherwise = [y]++getString ys
 
 -- Questao 13
 position x (y:ys) 
 	| x /= y = 1+position x ys
 	| x == y = 0
+
+-- Questao 14
+oddeven xs = (filter even xs, filter odd xs)
+
+-- Questão 22-26
+wherer = k where k = 1
+letter = let bissection a b = (a+b)/2 in bissection 2 4 
+mapper a = map(\x -> x^2)a
+composer a = sum.map(\x -> x^2)a
