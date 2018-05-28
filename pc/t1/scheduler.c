@@ -13,12 +13,12 @@
 
 #define NUMBEROFTHREADS 8
 
-sem_t cups[4];
-int canExecute[4] = {-1, -1, -1, -1};
-int priority_in_execution[4] = {-1, -1, -1, -1};
-int thread_in_execution[4] = {-1, -1, -1, -1};
+sem_t cups[NUMBEROFTHREADS];
 pthread_mutex_t queue_access = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t arrays_mutex = PTHREAD_MUTEX_INITIALIZER;
+int priority_in_execution[NUMBEROFTHREADS];
+int execution[4] = {-1, -1, -1, -1};
+int last_executed = -1;
 struct queue * priority_queue;
 
 typedef struct queue_item {
@@ -71,16 +71,20 @@ void printQueue(queue * p){
     printf("end of queue\n");
 }
 
+void print_array(int v[], int index){
+    printf("Array = ");
+    for(int i = 0; i < index; i++)
+        printf("%d", v[i]);
+    printf("\n");
+}   
+
 void * scheduler(){
     queue * stoped = createQueue();
     int i, flag;
+    int aux;
     while(1){
         if(stoped->first != NULL){
-            while(canExecute[i%4] != -1){
-                i++;
-            }
-            pthread_mutex_lock(&arrays_mutex);
-            canExecute[i] = stoped->first->id;
+            sem_post(&cups[stoped->first->id]);
             priority_in_execution[i] = stoped->first->id;
             printf("A thread %d voltou a executar\n", stoped->first->id);
             removeFromQueue(stoped);
@@ -90,26 +94,30 @@ void * scheduler(){
         pthread_mutex_lock(&queue_access);
         if(priority_queue->first != NULL){
             printf("O escalonador pegou o começo da fila\n");
-            printf("id = %d \n", priority_queue->first->id);
+            //printf("id = %d \n", priority_queue->first->id);
             flag = 0;
+            pthread_mutex_lock(&arrays_mutex);
             for(i = 0; i < 4; i++){
-                if(canExecute[i] == -1 && flag == 0){
-                    canExecute[i] = priority_queue->first->id;
+                if(execution[i] == -1 && flag == 0){
+                    sem_post(&cups[priority_queue->first->id]);
                     priority_in_execution[i] = priority_queue->first->priority;
                     flag = 1;
                     printf("O escalonador permitiu que %d executasse\n", priority_queue->first->id);
                 }
             }
+            pthread_mutex_unlock(&arrays_mutex);
             if(flag = 0){
+                pthread_mutex_lock(&arrays_mutex);
                 for(i = 0; i < 4; i++){
                     if(priority_in_execution[i] < priority_queue->first->priority && flag == 0){
-                        insertInQueue(stoped, canExecute[i], priority_in_execution[i]);
+                        insertInQueue(stoped, execution[i], priority_in_execution[i]);
                         printf("A thread %d foi interrompida para execução de outra com maior prioridade\n", canExecute[i]);
-                        canExecute[i] = priority_queue->first->id;
+                        sem_post(&cups[priority_queue->first->id]);
                         priority_in_execution[i] = priority_queue->first->priority;
                         flag = 1;
                     }
                 }
+                pthread_mutex_unlock(&arrays_mutex);
             }
             removeFromQueue(priority_queue);
         }
@@ -128,21 +136,16 @@ void * thread(void * arg){
         pthread_mutex_lock(&queue_access);
         insertInQueue(priority_queue, id, priority);
         printf("A thread %d com prioridade %d deseja executar\n", id, priority);
-        printQueue(priority_queue);
+        //printQueue(priority_queue);
         pthread_mutex_unlock(&queue_access);
-        pthread_mutex_lock(&arrays_mutex);
-        while(canExecute[i%4] != id){
-            pthread_mutex_unlock(&arrays_mutex);
-            //printf("To preso no while aaaaa!!!\n");
-            sleep(1);
-            i++;
-            pthread_mutex_lock(&arrays_mutex);
-        }
+        sem_wait(&cups[id]);
         pthread_mutex_unlock(&arrays_mutex);
         printf("A thread %d com prioridade %d esta executando\n", id, priority);
+        sleep(rand()%(id + 1));
         pthread_mutex_lock(&arrays_mutex);
         printf("A thread %d terminou a execução\n", id);
-        canExecute[i] = -1;
+        sem_post(&cups[id]);
+        execution[i];
         priority_in_execution[i] = -1;
         pthread_mutex_unlock(&arrays_mutex);
         sleep(10);
@@ -157,6 +160,10 @@ int main(){
     int * id; 
     int i;
     
+    for(i = 0; i < NUMBEROFTHREADS; i++){
+        sem_init(&cups[i], 0, 0);
+    }
+
     pthread_create(&f_scheduler, NULL, scheduler, NULL);
     for(i = 0; i < NUMBEROFTHREADS; i++){
         id = (int *)malloc(sizeof(int));
