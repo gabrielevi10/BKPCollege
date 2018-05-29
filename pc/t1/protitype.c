@@ -20,7 +20,7 @@ int priority_in_execution[NUMBEROFTHREADS];
 int execution[4] = {-1, -1, -1, -1};
 int executing[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 int last_executed[4] = {-1, -1, -1, -1};
-struct queue *priority_queue;
+struct queue * priority_queue;
 
 typedef struct queue_item {
     int id;
@@ -84,43 +84,51 @@ void * scheduler(){
     int i, flag;
     int aux;
     while(1){
+        if(stoped->first != NULL){
+            sem_post(&cups[stoped->first->id]);
+            priority_in_execution[i] = stoped->first->id;
+            printf("A thread %d voltou a executar\n", stoped->first->id);
+            removeFromQueue(stoped);
+            sleep(5);
+            pthread_mutex_unlock(&arrays_mutex);
+        }
         pthread_mutex_lock(&queue_access);
-        flag = 0;
         if(priority_queue->first != NULL){
-            /*Verifica se tem espaço para execução de uma thread*/
-            for(i=0; i < 4; i++){
-                pthread_mutex_lock(&arrays_mutex);
-                if(execution[i] == -1 && flag == 0){
-                    execution[i] = priority_queue->first->id;
-                    executing[priority_queue->first->id] = 1;
-                    priority_in_execution[priority_queue->first->id] = priority_queue->first->priority;
+            // printf("O escalonador pegou o começo da fila\n");
+            // printf("id = %d \n", priority_queue->first->id);
+            flag = 0;
+            pthread_mutex_lock(&arrays_mutex);
+            for(i = 0; i < 4; i++){
+                if(execution[i] == -1 && flag == 0 
+                        && last_executed[i] != priority_queue->first->priority){
                     sem_post(&cups[priority_queue->first->id]);
-                    sleep(1);
+                    execution[i] = priority_queue->first->id;
+                    last_executed[i] != priority_queue->first->id;
+                    executing[priority_queue->first->id] = 1;
+                    priority_in_execution[i] = priority_queue->first->priority;
                     flag = 1;
                 }
-                pthread_mutex_unlock(&arrays_mutex);
             }
-            /*Não encontrou espaço para executar, portanto vai verificar se tem 
-            alguma thread de menor prioridad executando para que a mesma seja bloqueada */
-            if(flag == 0){
+            pthread_mutex_unlock(&arrays_mutex);
+            if(flag = 0){
+                pthread_mutex_lock(&arrays_mutex);
                 for(i = 0; i < 4; i++){
-                    pthread_mutex_lock(&arrays_mutex);
-                    if(priority_in_execution[execution[i]] <= priority_queue->first->id && flag == 0){
-                        executing[execution[i]] = 0;
-                        printf("Thread %d was interrupted by the scheduler for execute %d\n", execution[i], priority_queue->first->id);
-                        execution[i] = priority_queue->first->id;
-                        executing[priority_queue->first->id] = 1;
-                        priority_in_execution[priority_queue->first->id] = priority_queue->first->priority;
+                    if(priority_in_execution[i] < priority_queue->first->priority && flag == 0 
+                            && last_executed[i] != priority_queue->first->priority){
+                        insertInQueue(stoped, execution[i], priority_in_execution[i]);
+                        printf("A thread %d foi interrompida para execução de outra com maior prioridade\n", execution[i]);
                         sem_post(&cups[priority_queue->first->id]);
-                        sleep(1);
+                        executing[priority_queue->first->id] = 1;
+                        priority_in_execution[i] = priority_queue->first->priority;
                         flag = 1;
                     }
-                    pthread_mutex_unlock(&arrays_mutex);
                 }
+                pthread_mutex_unlock(&arrays_mutex);
             }
             removeFromQueue(priority_queue);
         }
         pthread_mutex_unlock(&queue_access);
+        sleep(1);
     }
     pthread_exit(0);
 }
@@ -129,31 +137,73 @@ void * thread(void * arg){
     int id = *((int*) arg);
     int i = 0;
     int priority;
-    sleep(1);
     while(1){    
+        srand(time(NULL));
         priority = rand() % NUMBEROFTHREADS;
         pthread_mutex_lock(&queue_access);
-        printf("Thread %d with priority %d wants execute\n", id, priority);
+        printf("Thread %d wants execute\n", id);
         insertInQueue(priority_queue, id, priority);
         pthread_mutex_unlock(&queue_access);
         sem_wait(&cups[id]);
         printf("Thread %d is allowed to execute\n", id);
-        //printf("Thread %d esperando o mutex\n", id);
-        //pthread_mutex_lock(&arrays_mutex);
-        //printf("Thread %d passou o mutex\n", id);
+        pthread_mutex_lock(&arrays_mutex);
         while(executing[id] == 1){
-            //pthread_mutex_unlock(&arrays_mutex);
-            printf("Thread %d executando\n", id);
-            sleep(1);
-            //pthread_mutex_lock(&arrays_mutex);
+            pthread_mutex_unlock(&arrays_mutex);
+            pthread_mutex_lock(&arrays_mutex);
         }
-        //pthread_mutex_unlock(&arrays_mutex);
-        //printf("Thread %d was interrupted by the scheduler\n", id);
-        //sem_post(&cups[id]);
+        printf("Thread %d was interrupted by the scheduler\n", id);
+        sem_post(&cups[0]);
+        pthread_mutex_unlock(&arrays_mutex);
         sleep(1);
     }
     pthread_exit(0);
 }
+
+// void * firefox(){
+//     int priority;
+//     while(1){    
+//         srand(time(NULL));
+//         priority = rand() % NUMBEROFTHREADS;
+//         pthread_mutex_lock(&queue_access);
+//         printf("Text Editor wants execute\n");
+//         insertInQueue(priority_queue, 1, priority);
+//         pthread_mutex_unlock(&queue_access);
+//         sem_wait(&cups[0]);
+//         printf("Text Editor is allowed to execute\n");
+//         pthread_mutex_lock(&arrays_mutex);
+//         while(executing[0] == 1){
+//             pthread_mutex_unlock(&arrays_mutex);
+//             pthread_mutex_lock(&arrays_mutex);
+//         }
+//         printf("Text Editor was interrupted by the scheduler\n");
+//         sleep(1);
+//         pthread_mutex_unlock(&arrays_mutex);
+//     }
+// }
+
+// void * avast(){
+    
+// }
+
+// void * bash(){
+    
+// }
+
+// void * dropbox(){
+    
+// }
+
+// void * configuration(){
+    
+// }
+
+// void * software_interruption(){
+    
+// }
+
+// void * file_management(){
+    
+// }
 
 int main(){
     priority_queue = createQueue();
@@ -167,14 +217,16 @@ int main(){
     }
 
     pthread_create(&f_scheduler, NULL, scheduler, NULL);
-    for(i = 0; i < NUMBEROFTHREADS; i++){
+
+    for(i = 1; i < NUMBEROFTHREADS+1; i++){
         id = (int *)malloc(sizeof(int));
         *id = i;
         pthread_create(&threads[i], NULL, thread, (void *)id);
     }
 
     pthread_join(f_scheduler, NULL);
-    pthread_join(threads[0], NULL);
-    
+    for(i = 0; i < NUMBEROFTHREADS; i++){
+        pthread_join(threads[i], NULL);
+    }
     return 0;
 }
