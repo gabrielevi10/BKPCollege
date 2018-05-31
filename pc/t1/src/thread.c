@@ -12,7 +12,7 @@ void * thread(void * arg){
         pthread_mutex_unlock(&queue_access);
         sem_wait(&cups[id]);
         printf("Thread %d is allowed to execute\n", id);
-        while(executing[id] == 1){
+        while(can_execute[id] == 1){
             printf("Thread %d executando\n", id);
             pthread_mutex_lock(&arrays_mutex);
             time_in_execution[id]++;

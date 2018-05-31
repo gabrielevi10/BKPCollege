@@ -20,9 +20,10 @@
 sem_t cups[NUMBEROFTHREADS];
 pthread_mutex_t queue_access = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t arrays_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t time_mutex = PTHREAD_MUTEX_INITIALIZER;
 int priority_in_execution[NUMBEROFTHREADS];
 int execution[4] = {-1, -1, -1, -1};
-int executing[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+int can_execute[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 int last_executed[4] = {-1, -1, -1, -1};
 int time_in_execution[NUMBEROFTHREADS];
 struct queue *priority_queue;

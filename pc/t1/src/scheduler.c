@@ -17,7 +17,7 @@ void * scheduler(){
                 pthread_mutex_lock(&arrays_mutex);
                 if(execution[i] == -1 && flag == 0){
                     execution[i] = priority_queue->first->id;
-                    executing[priority_queue->first->id] = 1;
+                    can_execute[priority_queue->first->id] = 1;
                     priority_in_execution[priority_queue->first->id] = priority_queue->first->priority;
                     sem_post(&cups[priority_queue->first->id]);
                     sleep(1);
@@ -31,10 +31,10 @@ void * scheduler(){
                 for(i = 0; i < 4; i++){
                     pthread_mutex_lock(&arrays_mutex);
                     if(priority_in_execution[execution[i]] <= priority_queue->first->priority && flag == 0){
-                        executing[execution[i]] = 0;
+                        can_execute[execution[i]] = 0;
                         printf("Thread %d was interrupted by the scheduler for execute %d \n", execution[i], priority_queue->first->id);
                         execution[i] = priority_queue->first->id;
-                        executing[priority_queue->first->id] = 1;
+                        can_execute[priority_queue->first->id] = 1;
                         priority_in_execution[priority_queue->first->id] = priority_queue->first->priority;
                         sem_post(&cups[priority_queue->first->id]);
                         sleep(1);
@@ -46,16 +46,21 @@ void * scheduler(){
                 para dar a vez a outra thread*/
                 for(i=0; i < 4; i++){
                     pthread_mutex_lock(&arrays_mutex);
-                    if(time_in_execution[execution[i]] > 10 && flag == 0){
-                        executing[execution[i]] = 0;
+                    pthread_mutex_lock(&time_mutex);
+                    if(time_in_execution[execution[i]] > 20 && flag == 0){
+                        can_execute[execution[i]] = 0;
                         printf("Thread %d was interrupted by the scheduler for execute %d because of time in execution \n", execution[i], priority_queue->first->id);
                         execution[i] = priority_queue->first->id;
-                        executing[priority_queue->first->id] = 1;
+                        can_execute[priority_queue->first->id] = 1;
                         priority_in_execution[priority_queue->first->id] = priority_queue->first->priority;
                         sem_post(&cups[priority_queue->first->id]);
                         sleep(1);
                         flag = 1;
                     }
+                    if(i == 4 && flag == 0){
+                        i = 0;
+                    }
+                    pthread_mutex_unlock(&time_mutex);
                     pthread_mutex_unlock(&arrays_mutex);
                 }
             }
