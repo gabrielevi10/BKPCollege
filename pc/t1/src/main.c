@@ -24,6 +24,7 @@ int priority_in_execution[NUMBEROFTHREADS];
 int execution[4] = {-1, -1, -1, -1};
 int executing[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 int last_executed[4] = {-1, -1, -1, -1};
+int time_in_execution[NUMBEROFTHREADS];
 struct queue *priority_queue;
 
 int main(){
@@ -34,6 +35,8 @@ int main(){
     int i;
     
     for(i = 0; i < NUMBEROFTHREADS; i++){
+        priority_in_execution[i] = -1;
+        time_in_execution[i] = 0;
         sem_init(&cups[i], 0, 0);
     }
 

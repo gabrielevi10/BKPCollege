@@ -14,6 +14,9 @@ void * thread(void * arg){
         printf("Thread %d is allowed to execute\n", id);
         while(executing[id] == 1){
             printf("Thread %d executando\n", id);
+            pthread_mutex_lock(&arrays_mutex);
+            time_in_execution[id]++;
+            pthread_mutex_unlock(&arrays_mutex);     
             sleep(1);
         }
         sleep(1);

@@ -21,6 +21,7 @@ extern int execution[4];
 extern int executing[8];
 extern int last_executed[4];
 extern struct queue *priority_queue;
+extern int time_in_execution[NUMBEROFTHREADS];
 
 void *scheduler();
 

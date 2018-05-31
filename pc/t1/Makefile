@@ -1,5 +1,6 @@
 all: queue main thread scheduler
 	gcc -pthread obj/main.o obj/queue.o obj/scheduler.o obj/thread.o -o bin/scheduler
+	
 main:
 	gcc -pthread -Wall -c src/main.c -o obj/main.o -I include/ 
 

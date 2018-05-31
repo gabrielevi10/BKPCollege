@@ -8,12 +8,12 @@
 typedef struct queue_item {
     int id;
     int priority; 
-    struct queue_item * next;
+    struct queue_item *next;
 } queue_item;
 
 typedef struct queue {
-    queue_item * first;
-    queue_item * last;
+    queue_item *first;
+    queue_item *last;
 } queue;
 
 queue *createQueue();
