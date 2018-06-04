@@ -1,10 +1,10 @@
 ## Simulador de um Escalonador de Threads Simplificado
 
 ### Para compilar:
-    ```
-    make
-    ```
+```
+make
+```
 ### Para executar:
-    ```
-    make run
-    ```
+```
+make run
+```
