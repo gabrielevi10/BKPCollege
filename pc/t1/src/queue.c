@@ -1,3 +1,9 @@
+/* 	Universidade de Brasilia
+	Gabriel Levi Gomes da Silva
+	Matricula - 16/0006490
+	Trabalho Prático 1 - Programacao Concorrente
+*/
+
 #include "queue.h"
 
 queue * createQueue(){

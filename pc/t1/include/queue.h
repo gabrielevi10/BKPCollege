@@ -1,3 +1,9 @@
+/* 	Universidade de Brasilia
+	Gabriel Levi Gomes da Silva
+	Matricula - 16/0006490
+	Trabalho Prático 1 - Programacao Concorrente
+*/
+
 #ifndef QUEUE_H
 #define QUEUE_H
 

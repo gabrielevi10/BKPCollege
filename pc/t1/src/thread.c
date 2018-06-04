@@ -1,3 +1,9 @@
+/* 	Universidade de Brasilia
+	Gabriel Levi Gomes da Silva
+	Matricula - 16/0006490
+	Trabalho Prático 1 - Programacao Concorrente
+*/
+
 #include "thread.h"
 
 void * thread(void * arg){
@@ -13,12 +19,13 @@ void * thread(void * arg){
         sem_wait(&cups[id]);
         printf("Thread %d is allowed to execute\n", id);
         while(can_execute[id] == 1){
-            printf("Thread %d executando\n", id);
-            pthread_mutex_lock(&arrays_mutex);
+            printf("Thread %d executing with time %d\n", id, time_in_execution[id]);
+            pthread_mutex_lock(&time_mutex);
             time_in_execution[id]++;
-            pthread_mutex_unlock(&arrays_mutex);     
+            pthread_mutex_unlock(&time_mutex);     
             sleep(1);
         }
+        time_in_execution[id] = 0;
         sleep(1);
     }
     pthread_exit(0);
