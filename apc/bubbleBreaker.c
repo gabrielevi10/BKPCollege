@@ -2,9 +2,7 @@
 Instituto de Ciencias Exatas
 Departamento de Ciencia da Computacao
 Algoritmo e Programacao de Computadores 1/2016
-Aluno(a): Gabriel Levi Gomes da Silva
-Matricula: 16/0006490
-Turma A
+Aluno(a): Gabriel Levi
 Versao do Compilador: gcc (Ubuntu 5.3.1-14ubuntu2.1) 5.3.1 20160413
 
 Descricao: Jogo EliminaLetras - parte 3,no qual era pedido para implementar o rankig do jogo mostrando as dez maiores pontuaçoes
