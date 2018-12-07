@@ -70,8 +70,8 @@ def round_of_rating(number):
 
 def make_grade(dist, angle, grade, myPositionX, myPositionY):
     obstaclePosition = getAbsolutePositionOfObstacle(dist, angle)
-    line = int(math.floor(obstaclePosition['x']/0.5) + myPositionX)
-    col =  int(math.floor(obstaclePosition['y']/0.5) + myPositionY)
+    col = int(math.floor(obstaclePosition['x']/0.5) + myPositionX)
+    line =  int(math.floor(obstaclePosition['y']/0.5) + myPositionY)
     try:
         if grade[line][col] < 10 :
             grade[line][col] += 1
@@ -122,8 +122,8 @@ def make_empty_cell(dist, angle, grade, myPositionX, myPositionY):
     if dist < 0.5:
         return
     empty_position = getAbsolutePositionOfObstacle(dist, angle)
-    line = int(math.floor(empty_position['x']/0.5) + myPositionX)
-    col =  int(math.floor(empty_position['y']/0.5) + myPositionY)
+    col = int(math.floor(empty_position['x']/0.5) + myPositionX)
+    line =  int(math.floor(empty_position['y']/0.5) + myPositionY)
     try:
         if grade[line][col] > 0:
             grade[line][col] -= 1
@@ -132,12 +132,26 @@ def make_empty_cell(dist, angle, grade, myPositionX, myPositionY):
         # sys.exit()
     make_empty_cell(dist-0.5, angle, grade, myPositionX, myPositionY)
 
+def definePath(back, goal, adj_list):
+    s = bfs(back, goal, adj_list)
+    path = []
+    b = goal
+    path.append(-1)
+    while(b != -1):
+        path.append(b)
+        b = s[b]
+    path.reverse()
+    return path
 
-def turn(vel_msg, vel, angle):
-    global z, yaw_goal_tolerance
-    while abs(z - angle) > yaw_goal_tolerance:
-        vel_msg.linear.x = 0
-        vel_msg.angular.z = 1
+def goToPosition(x_goal, y_goal, vel_msg, vel):
+    global yaw_goal_tolerance, xy_goal_tolerance
+    while abs(x - x_goal) > xy_goal_tolerance or abs(y - y_goal) > xy_goal_tolerance :
+        while abs(z - turn_position(x, y, x_goal, y_goal)) > yaw_goal_tolerance:
+            vel_msg.linear.x = 0
+            vel_msg.angular.z = 1
+            vel.publish(vel_msg)
+        vel_msg.linear.x = 1
+        vel_msg.angular.z = 0
         vel.publish(vel_msg)
 
 def OcupeTheGrade():
@@ -172,7 +186,7 @@ def OcupeTheGrade():
         adj_list.append(aux2)
         aux2 = []
 
-    # coordenadas que cada no do grafo corresponde
+    # coordenadas que cada node do grafo corresponde
     for line in configs_file.readlines():
         r = (line.split(" "))
         aux = r[1].split(",")
@@ -181,40 +195,24 @@ def OcupeTheGrade():
         coord_list.append(aux2)
         aux2 = []
 
-
     rate = rospy.Rate(20)
-    # goal = 0
     l = 0.5
-    back = 0
+    last = 0
     grade =[[]]
     ok = False
-    ok_all = False
     myPositionX = int(10/l)
     myPositionY = int(10/l)
-    list_of_grades = []
+    list_of_grades = [None] * 56
 
-    while not rospy.is_shutdown() and not ok_all:
-        goal = 3
-        s = bfs(back, goal, adj_list)
-        path = []
-        b = goal
-        path.append(-1)
-        while(b != -1):
-            path.append(b)
-            b = s[b]
-        path.reverse()
-        back = goal
+    while not rospy.is_shutdown():
+        goal = 10
+        path = definePath(last, goal, adj_list)
+        last = goal
         print("Nodes do grafo a serem percorridos: " + str(path))
         for i in path:
             if i is not -1: 
-                while abs(x - coord_list[i][0]) > xy_goal_tolerance or abs(y - coord_list[i][1]) > xy_goal_tolerance :
-                    while abs(z - turn_position(x, y, coord_list[i][0], coord_list[i][1])) > yaw_goal_tolerance :
-                        vel_msg.linear.x = 0
-                        vel_msg.angular.z = 1
-                        vel.publish(vel_msg)
-                    vel_msg.linear.x = 1
-                    vel_msg.angular.z = 0
-                    vel.publish(vel_msg)    
+                if i is not -1:
+                    goToPosition(coord_list[i][0], coord_list[i][1], vel_msg, vel)
             else:
                 ok = True
             print("Node atual:" + str(i))
@@ -222,13 +220,12 @@ def OcupeTheGrade():
             for q in range(1):
                 make_varredure(vel_msg, vel, grade, myPositionX, myPositionY)
             
-            grade[myPositionX][myPositionY] = 'R'
+            grade[myPositionX][myPositionY] = 0
 
             output = open("grade/node" + str(i) + ".txt", "w");
 
-
-            for b in range(int(10/l*2)) :
-                for a in range(int(10/l*2)) :
+            for a in range(int(10/l*2)) :
+                for b in range(int(10/l*2)) :
                     if grade[a][b] == 5:
                         output.write(".")
                         print(".", end='')
@@ -244,9 +241,10 @@ def OcupeTheGrade():
                             print(str(grade[a][b]), end='')
                 print()
                 output.write("\n")
-            list_of_grades.append(grade)
+            list_of_grades[i] = grade
             output.close()
-            if ok:
+
+            while ok and goal is not -1:
                 print("Coordenadas atuais: " + str(x) + " " + str(y))
                 print("Informe a coordenada X e Y que deseja ir, dentro do mapa e em coordenadas globais")
                 x_goal = input("X: ")
@@ -268,9 +266,62 @@ def OcupeTheGrade():
                         break
                     goal += 1
 
-                print(goal)
-                    # s = bfs(back, goal, adj_list)
-                    # print(s)
+                print("goal: " + str(goal))
+                print("back: " + str(last))
+                path = definePath(last, goal, adj_list)
+                last = goal
+                print(path)
+
+                fx = x
+                fy = y
+                line = 0
+                col = 0
+                
+                back_i = path[0]
+                current = back_i
+                for i in path:
+                    back_x = x
+                    back_y = y
+                    if i is not -1: 
+                        while abs(x - coord_list[i][0]) > xy_goal_tolerance or abs(y - coord_list[i][1]) > xy_goal_tolerance :
+                            while abs(z - turn_position(x, y, coord_list[i][0], coord_list[i][1])) > yaw_goal_tolerance:
+                                vel_msg.linear.x = 0
+                                vel_msg.angular.z = 1
+                                vel.publish(vel_msg)
+                            vel_msg.linear.x = 1
+                            vel_msg.angular.z = 0
+                            vel.publish(vel_msg)
+            
+                            if abs(back_x - x) >= 0.5 or abs(back_y - y) >= 0.5:
+                                if (line > 10/l*2 or col > 10/l*2) or (line < 0 or col < 0):
+                                    current = i
+                                    fx = coord_list[i][0]
+                                    fy = coord_list[i][1]
+                                
+                                ax = x - fx
+                                ay = fy - y
+                                back_x = x
+                                back_y = y
+                                col = int(math.floor(ax/0.5) + myPositionX)
+                                line =  int(math.floor(ay/0.5) + myPositionY)
+
+                                # printa a grade de ocupacao com o robo andando sobre ela
+                                print()
+                                for a in range(int(10/l*2)) :
+                                    for b in range(int(10/l*2)) :
+                                        if a == line and b == col:
+                                            print("R", end='')
+                                        elif list_of_grades[current][a][b] == 5:
+                                            print(".", end='')
+                                        else:
+                                            if list_of_grades[current][a][b] == 10:
+                                                print("#", end='')
+                                            elif list_of_grades[current][a][b] == 0:
+                                                print(" ", end='')
+                                            else: 
+                                                print(str(list_of_grades[current][a][b]), end='')
+                                    print()
+                    back_i = i
 
         rate.sleep()
 
